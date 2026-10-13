@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyMate SST — Class 10 CBSE Fast-Pass</title>
+  
+  <!-- Google Fonts & Marked.js for Markdown Formatting -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --accent-purple: #818cf8;
+      --accent-cyan: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    /* Header Styling */
+    .header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(129, 140, 248, 0.15);
+      border: 1px solid rgba(129, 140, 248, 0.3);
+      color: var(--accent-purple);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    .title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #ffffff, #c7d2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* Main Card */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.2);
+    }
+
+    /* Quick Suggestion Chips */
+    .chips-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .chip {
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .chip:hover {
+      background: rgba(129, 140, 248, 0.2);
+      border-color: var(--accent-purple);
+      color: #fff;
+    }
+
+    /* Action Button */
+    .btn-generate {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-generate:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Output Area */
+    .output-card {
+      display: none; /* Hidden until generated */
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    /* Styling Markdown Output Elements */
+    .output-card h1, .output-card h2, .output-card h3 {
+      color: var(--accent-cyan);
+      margin-top: 25px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .output-card h3:first-child { margin-top: 0; }
+
+    .output-card ul, .output-card ol {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+
+    .output-card li { margin-bottom: 8px; }
+
+    .output-card strong {
+      color: var(--accent-purple);
+      font-weight: 700;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-left-color: var(--accent-purple);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <div class="header">
+      <span class="badge">CBSE Class 10 SST Engine</span>
+      <h1 class="title">StudyMate SST</h1>
+      <p class="subtitle">Skip 4-hour YouTube marathons. Get surgical NCERT summaries, competency traps, and 15-year board patterns in 60 seconds.</p>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="card">
+      <div class="input-group">
+        <label for="chapterInput">Enter SST Chapter Name</label>
+        <input type="text" id="chapterInput" placeholder="e.g. Water Resources, Nationalism in Europe, Power Sharing">
+      </div>
+
+      <div class="chips-label">Quick select popular chapters:</div>
+      <div class="chips-container">
+        <span class="chip" onclick="selectChip('Water Resources')">Water Resources</span>
+        <span class="chip" onclick="selectChip('Nationalism in Europe')">Nationalism in Europe</span>
+        <span class="chip" onclick="selectChip('Power Sharing')">Power Sharing</span>
+        <span class="chip" onclick="selectChip('Development')">Development</span>
+        <span class="chip" onclick="selectChip('Print Culture')">Print Culture</span>
+      </div>
+
+      <button id="submitBtn" class="btn-generate" onclick="generateGuide()">Generate Revision Guide 🚀</button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-spinner">
+      <div class="spinner"></div>
+      <p style="color: var(--accent-purple); font-weight: 600;">Analyzing NCERT Textbook & 15-Year CBSE Patterns...</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Extracting high-yield PYQs and competency traps.</p>
+    </div>
+
+    <!-- Markdown Output Card -->
+    <div id="outputCard" class="output-card"></div>
+
+    <div class="footer">
+      Built for Class 10 CBSE Board Aspirants • Zero API Key Required
+    </div>
+
+  </div>
+
+  <script>
+    function selectChip(name) {
+      document.getElementById('chapterInput').value = name;
+    }
+
+    async function generateGuide() {
+      const chapterInput = document.getElementById("chapterInput").value.trim();
+      const submitBtn = document.getElementById("submitBtn");
+      const loadingState = document.getElementById("loadingState");
+      const outputCard = document.getElementById("outputCard");
+
+      if (!chapterInput) {
+        alert("Please enter or select an SST chapter name!");
+        return;
+      }
+
+      // UI State Transition
+      submitBtn.disabled = true;
+      loadingState.style.display = "block";
+      outputCard.style.display = "none";
+      outputCard.innerHTML = "";
+
+      try {
+        // Calls your secret Netlify Serverless Backend Function
+        const response = await fetch("/.netlify/functions/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: chapterInput })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned status ${response.status}`);
+        }
+
+        const data = await response.json();
+        const rawMarkdown = data.choices[0].message.content;
+
+        // Uses marked.js library to convert AI Markdown into beautiful HTML
+        outputCard.innerHTML = marked.parse(rawMarkdown);
+        outputCard.style.display = "block";
+
+      } catch (error) {
+        console.error("StudyMate Error:", error);
+        outputCard.innerHTML = `
+          <h3 style="color: #ef4444; border: none;">⚠️ Connection Error</h3>
+          <p style="color: #cbd5e1; margin-top: 10px;">
+            Could not reach the server function. If you are testing on your computer locally, please deploy to Netlify to test backend functions!
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 10px;">Details: ${error.message}</p>
+        `;
+        outputCard.style.display = "block";
+      } finally {
+        submitBtn.disabled = false;
+        loadingState.style.display = "none";
+      }
+    }
+  </script>
+
+</body>
+</html>
