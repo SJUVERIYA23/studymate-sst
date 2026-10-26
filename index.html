@@ -298,39 +298,39 @@
         return;
       }
 
-      // UI State Transition
       submitBtn.disabled = true;
       loadingState.style.display = "block";
       outputCard.style.display = "none";
       outputCard.innerHTML = "";
 
       try {
-        // Calls your secret Netlify Serverless Backend Function
         const response = await fetch("/.netlify/functions/ask", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt: chapterInput })
         });
 
-        if (!response.ok) {
-          throw new Error(`Server returned status ${response.status}`);
+        const data = await response.json();
+
+        // Safety Check 1: If backend returned an explicit error
+        if (data.error) {
+          throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
         }
 
-        const data = await response.json();
-        const rawMarkdown = data.choices[0].message.content;
+        // Safety Check 2: Verify choices array exists before accessing choices[0]
+        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+          throw new Error("Invalid response format received from AI server.");
+        }
 
-        // Uses marked.js library to convert AI Markdown into beautiful HTML
+        const rawMarkdown = data.choices[0].message.content;
         outputCard.innerHTML = marked.parse(rawMarkdown);
         outputCard.style.display = "block";
 
       } catch (error) {
         console.error("StudyMate Error:", error);
         outputCard.innerHTML = `
-          <h3 style="color: #ef4444; border: none;">⚠️ Connection Error</h3>
-          <p style="color: #cbd5e1; margin-top: 10px;">
-            Could not reach the server function. If you are testing on your computer locally, please deploy to Netlify to test backend functions!
-          </p>
-          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 10px;">Details: ${error.message}</p>
+          <h3 style="color: #ef4444; border: none;">⚠️ System Message</h3>
+          <p style="color: #cbd5e1; margin-top: 10px;">${error.message}</p>
         `;
         outputCard.style.display = "block";
       } finally {
